@@ -20,7 +20,6 @@ foam.CLASS({
   ],
 
   properties: [
-    ['transient', true],
     ['of', 'foam.nanos.crunch.UserCapabilityJunction'],
     {
       name: 'capability',

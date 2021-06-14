@@ -10,6 +10,14 @@ foam.CLASS({
   extends: 'foam.nanos.approval.CompositeApprovable',
   implements: ['foam.nanos.approval.CustomViewReferenceApprovable'],
 
+  requires: [
+    'foam.u2.crunch.EasyCrunchWizard'
+  ],
+
+  javaImports: [
+    'foam.u2.crunch.EasyCrunchWizard'
+  ],
+
   properties: [
     {
       name: 'associatedTopLevelUCJ',
@@ -20,6 +28,17 @@ foam.CLASS({
         this can refer to an arbitrary UCJ among those with the most specific
         subject association.
       `
+    },
+    {
+      name: 'config',
+      class: 'FObjectProperty',
+      of: 'foam.u2.crunch.EasyCrunchWizard',
+      factory: function() {
+        return this.EasyCrunchWizard.create();
+      },
+      javaFactory: `
+        return new EasyCrunchWizard();
+      `
     }
   ],
 
@@ -27,20 +46,17 @@ foam.CLASS({
     async function launchViewReference(x, approvalRequest) {
       var ucj = (await x.userCapabilityJunctionDAO
         .where(this.associatedTopLevelUCJ).select()).array[0];
-      var subject = await ucj.getSubject();
-
-      x.crunchController.createWizardSequence(ucj.targetId, x)
-        .reconfigure('LoadCapabilitiesAgent', {
-          subject: subject
-        })
-        .reconfigure('ConfigureFlowAgent', {
-          popupMode: false
-        })
-        .remove('LoadTopConfig')
-        .remove('RequirementsPreviewAgent')
-        .remove('SkipGrantedAgent')
-        .remove('WizardStateAgent')
-        .execute();
+      x.stack.push({
+        class: this.config.view,
+        data: ucj,
+        config: this.config
+      });
+    },
+    {
+      name: 'toSummary',
+      code: function() {
+        return this.associatedTopLevelUCJ.toSummary();
+      }
     }
   ]
 });

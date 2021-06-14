@@ -187,7 +187,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
   // then the map is stored in the session context under CACHE_KEY
   public Map initCache(X x, boolean cache) {
-    
+
     if ( cache ) {
       Sink purgeSink = new Sink() {
         public void put(Object obj, Detachable sub) {
@@ -609,6 +609,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       .setAssociatedTopLevelUCJ(ucjReference)
       .setApprovableIds(approvableIds.toArray(String[]::new))
       .build();
+
+    var config = approvable.getConfig();
+    config.setRejectOnInvalidatedSave(true);
 
     ((DAO) x.get("approvableDAO")).put(approvable);
 
