@@ -48,6 +48,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'requireAll'
+    },
+    {
+      class: 'String',
+      name: 'waoSetting'
     }
   ],
 
@@ -68,6 +72,11 @@ foam.CLASS({
           mode: this.skipMode });
       if ( this.statelessWizard )
         sequence.remove('WizardStateAgent');
+      if ( this.waoSetting ) {
+        sequence.reconfigure('LoadCapabilitiesAgent', {
+          waoSetting: this.waoSetting
+        });
+      }
     },
     async function execute () {
       // Subclasses which fetch information asynchronously can override this

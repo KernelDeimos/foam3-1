@@ -612,6 +612,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     var config = approvable.getConfig();
     config.setRejectOnInvalidatedSave(true);
+    config.setWaoSetting("APPROVAL");
 
     ((DAO) x.get("approvableDAO")).put(approvable);
 
