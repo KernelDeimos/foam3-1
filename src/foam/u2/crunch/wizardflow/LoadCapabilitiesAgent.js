@@ -7,7 +7,12 @@
 foam.CLASS({
   package: 'foam.u2.crunch.wizardflow',
   name: 'LoadCapabilitiesAgent',
-  implements: [ 'foam.core.ContextAgent' ],
+  implements: [
+    {
+      path: 'foam.core.ContextAgent',
+      flags: ['web']
+    }
+  ],
 
   documentation: `
     Calls crunchService to fetch the necessary prerequisie capabilities.

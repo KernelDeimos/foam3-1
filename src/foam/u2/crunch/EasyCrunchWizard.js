@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'EasyCrunchWizard',
 
   requires: [
+    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.SkipGrantedAgent',
     'foam.u2.crunch.wizardflow.SkipMode',
     'foam.u2.wizard.StepWizardConfig'
@@ -74,7 +75,7 @@ foam.CLASS({
         sequence.remove('WizardStateAgent');
       if ( this.waoSetting ) {
         sequence.reconfigure('LoadCapabilitiesAgent', {
-          waoSetting: this.waoSetting
+          waoSetting: this.LoadCapabilitiesAgent.WAOSetting[this.waoSetting]
         });
       }
     },

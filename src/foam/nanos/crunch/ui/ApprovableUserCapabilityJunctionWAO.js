@@ -49,7 +49,15 @@ foam.CLASS({
         }
         var { ucj, approvable } = await this.getUcjAndApprovable_(wizardlet);
         this.updateApprovable_(wizardlet, ucj, approvable);
-        approvable = await this.userCapabilityJunctionApprovableDAO.put(approvable);
+        if ( Object.keys(approvable.propertiesToUpdate).length > 0 ) {
+          approvable = await this.userCapabilityJunctionApprovableDAO.put(approvable);
+        } else {
+          var oldApprovable =
+            await this.userCapabilityJunctionApprovableDAO.find(approvable.id);
+          if ( oldApprovable ) {
+            await this.userCapabilityJunctionApprovableDAO.remove(approvable.id);
+          }
+        }
         ucj = this.applyApprovalToUCJ_(approvable, ucj);
         if ( wizardlet.reloadAfterSave && options.reloadData ) {
           wizardlet.loadingLevel = this.LoadingLevel.IDLE;
@@ -89,6 +97,7 @@ foam.CLASS({
     function updateApprovable_(wizardlet, ucj, approvable) {
       var ucjNew = ucj.clone();
       ucjNew.data = wizardlet.data;
+      if ( Object.keys(ucj.data.diff(ucjNew.data)).length > 0 ) return;
       approvable.propertiesToUpdate = ucj.diff(ucjNew);
     },
     function applyApprovalToUCJ_(approvable, oldUCJ) {
